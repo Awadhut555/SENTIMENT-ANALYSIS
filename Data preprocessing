@@ -1,0 +1,50 @@
+import pandas as pd
+import nltk
+import re
+
+from nltk.corpus import stopwords
+from sklearn.model_selection import train_test_split
+from sklearn.feature_extraction.text import CountVectorizer
+from sklearn.naive_bayes import MultinomialNB
+from sklearn.metrics import accuracy_score, classification_report
+
+nltk.download('stopwords')
+
+data = {
+    'review': [
+        "This product is amazing",
+        "I love this item",
+        "Worst experience ever",
+        "Not good at all",
+        "Very happy with the purchase",
+        "Terrible quality",
+        "Excellent service",
+        "I am disappointed",
+        "Best product",
+        "Not worth the money"
+    ],
+    'sentiment': [
+        "positive","positive","negative","negative","positive",
+        "negative","positive","negative","positive","negative"
+    ]
+}
+
+df = pd.DataFrame(data)
+df.head()
+stop_words = set(stopwords.words('english'))
+
+def clean_text(text):
+    text = text.lower()                          # Lowercase
+    text = re.sub(r'[^a-zA-Z]', ' ', text)       # Remove symbols
+    words = text.split()
+    words = [word for word in words if word not in stop_words]
+    return " ".join(words)
+
+df['clean_review'] = df['review'].apply(clean_text)
+new_review = ["This product is very bad"]
+new_review_clean = [clean_text(new_review[0])]
+
+new_vector = vectorizer.transform(new_review_clean)
+prediction = model.predict(new_vector)
+
+print("Sentiment:", prediction[0])
